@@ -1,0 +1,392 @@
+#botao-msg-rapida {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background: linear-gradient(135deg, #7c3aed, #f97316);
+  color: white;
+  padding: 12px;
+  border-radius: 50%;
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 9999;
+  box-shadow: 0 8px 18px rgba(124, 58, 237, 0.45);
+}
+
+body.kuikmsg-dark-theme #botao-msg-rapida {
+  background: linear-gradient(135deg, #0f172a, #2563eb);
+  box-shadow: 0 8px 22px rgba(37, 99, 235, 0.55);
+}
+
+#menu-msg-rapida {
+  display: none;
+  flex-direction: column;
+  align-items: flex-end;
+  position: fixed;
+  bottom: 70px;
+  right: 20px;
+  background: linear-gradient(180deg, #ffffff, #fff7ed);
+  border: 2px solid #a855f7;
+  box-shadow: 0 10px 28px rgba(249, 115, 22, 0.35);
+  z-index: 9999;
+  padding: 12px 12px 24px;
+  border-radius: 10px;
+  width: 520px;
+  max-height: 340px; /* Limita altura */
+  overflow-y: auto; /* Habilita rolagem */
+  gap: 6px;
+}
+
+body.kuikmsg-dark-theme #menu-msg-rapida {
+  background: linear-gradient(180deg, #020617, #0f172a);
+  border-color: #38bdf8;
+  box-shadow: 0 14px 34px rgba(2, 132, 199, 0.45);
+}
+
+#menu-msg-rapida button {
+  box-sizing: border-box;
+  display: block;
+  margin: 0;
+  padding: 10px;
+  width: 100%;
+  background: linear-gradient(135deg, #fef3c7, #fed7aa);
+  border: 1px solid #fb923c;
+  border-radius: 6px;
+  text-align: right;
+  cursor: pointer;
+  font-size: 14px;
+  color: #431407;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: auto;
+  text-overflow: ellipsis; /* Adiciona os "..." */
+}
+
+body.kuikmsg-dark-theme #menu-msg-rapida button {
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+  border-color: #334155;
+  color: #e0f2fe;
+}
+
+#menu-msg-rapida button:hover {
+  background: linear-gradient(135deg, #f97316, #ec4899);
+  color: #ffffff;
+}
+
+body.kuikmsg-dark-theme #menu-msg-rapida button:hover {
+  background: linear-gradient(135deg, #0369a1, #1d4ed8);
+  color: #ffffff;
+}
+
+#menu-msg-rapida .search-message-input {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #38bdf8;
+  border-radius: 8px;
+  outline: none;
+  background: #ffffff;
+  color: #0f172a;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(56, 189, 248, 0.25);
+}
+
+body.kuikmsg-dark-theme #menu-msg-rapida .search-message-input {
+  background: #0f172a;
+  border-color: #38bdf8;
+  color: #e0f2fe;
+  box-shadow: 0 4px 14px rgba(14, 165, 233, 0.25);
+}
+
+body.kuikmsg-dark-theme #menu-msg-rapida .search-message-input::placeholder {
+  color: #93c5fd;
+}
+
+#menu-msg-rapida .search-message-input:focus {
+  border-color: #7c3aed;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.18);
+}
+
+body.kuikmsg-dark-theme #menu-msg-rapida .search-message-input:focus {
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.22);
+}
+
+#menu-msg-rapida .empty-search-message {
+  width: 100%;
+  padding: 12px;
+  border: 1px dashed #fb923c;
+  border-radius: 8px;
+  background: #fff7ed;
+  color: #9a3412;
+  text-align: center;
+  font-weight: 700;
+}
+
+.message-row {
+  display: flex;
+  align-items: stretch;
+  gap: 6px;
+  width: 100%;
+}
+
+#menu-msg-rapida .message-btn {
+  flex: 1;
+  min-width: 0;
+  background: linear-gradient(135deg, #38bdf8, #6366f1);
+  border-color: #2563eb;
+  color: #ffffff;
+  text-align: left;
+}
+
+body.kuikmsg-dark-theme #menu-msg-rapida .message-btn {
+  background: linear-gradient(135deg, #075985, #1d4ed8);
+  border-color: #38bdf8;
+  color: #ffffff;
+}
+
+#menu-msg-rapida .message-btn:hover {
+  background: linear-gradient(135deg, #2563eb, #7c3aed);
+}
+
+#menu-msg-rapida .message-action-btn {
+  width: 42px;
+  min-width: 42px;
+  text-align: center;
+  padding: 10px 6px;
+}
+
+#menu-msg-rapida .edit-message-btn {
+  background: linear-gradient(135deg, #facc15, #f97316);
+  border-color: #ea580c;
+  color: #431407;
+}
+
+body.kuikmsg-dark-theme #menu-msg-rapida .edit-message-btn {
+  background: linear-gradient(135deg, #0f766e, #0891b2);
+  border-color: #22d3ee;
+  color: #ecfeff;
+}
+
+#menu-msg-rapida .edit-message-btn:hover {
+  background: linear-gradient(135deg, #fb923c, #f59e0b);
+  color: #ffffff;
+}
+
+#menu-msg-rapida .delete-message-btn {
+  background: linear-gradient(135deg, #fb7185, #dc2626);
+  border-color: #b91c1c;
+  color: #ffffff;
+}
+
+body.kuikmsg-dark-theme #menu-msg-rapida .delete-message-btn {
+  background: linear-gradient(135deg, #7f1d1d, #dc2626);
+  border-color: #ef4444;
+}
+
+#menu-msg-rapida .delete-message-btn:hover {
+  background: linear-gradient(135deg, #ef4444, #991b1b);
+}
+
+body.kuikmsg-dark-theme #menu-msg-rapida .delete-message-btn:hover {
+  background: linear-gradient(135deg, #991b1b, #ef4444);
+}
+
+#menu-msg-rapida .add-message-btn {
+  margin-bottom: 12px;
+  padding: 12px 14px;
+  background: linear-gradient(135deg, #f5890e, #f8f6ef) !important;
+  border: 1px solid #584101 !important;
+  color: #ffffff !important;
+  text-align: center;
+}
+
+body.kuikmsg-dark-theme #menu-msg-rapida .add-message-btn {
+  background: linear-gradient(135deg, #0ea5e9, #1d4ed8) !important;
+  border-color: #7dd3fc !important;
+  color: #ffffff !important;
+}
+
+#menu-msg-rapida .add-message-btn:hover {
+  background: linear-gradient(135deg, #0d4eb1, #0f3876) !important;
+}
+
+/* Flappy Bird overlay styles */
+#flappy-toggle {
+  position: fixed;
+  bottom: 30px;
+  right: 90px;
+  background: #1e90ff;
+  color: #fff;
+  padding: 12px;
+  border-radius: 50%;
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 10000;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+#flappy-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+}
+
+#flappy-container {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+  overflow: hidden;
+}
+
+#flappy-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  background: #0f172a;
+  color: #e2e8f0;
+}
+
+#flappy-title {
+  font-weight: 700;
+}
+
+#flappy-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#flappy-score {
+  margin-right: 8px;
+}
+
+#flappy-restart,
+#flappy-close {
+  background: #1e293b;
+  color: #e2e8f0;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+#flappy-restart:hover,
+#flappy-close:hover {
+  background: #334155;
+}
+
+#flappy-canvas {
+  display: block;
+}
+
+/* Add message modal styles */
+#add-message-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 10001;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.modal-header h3 {
+  margin: 0;
+  color: #333;
+}
+
+.close {
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #999;
+}
+
+.close:hover {
+  color: #333;
+}
+
+.modal-body {
+  padding: 20px;
+}
+
+.modal-body textarea {
+  width: 100%;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 10px;
+  font-family: inherit;
+  font-size: 14px;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 15px 20px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.save-btn, .cancel-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.save-btn {
+  background: #007bff;
+  color: white;
+}
+
+.save-btn:hover {
+  background: #0056b3;
+}
+
+.cancel-btn {
+  background: #6c757d;
+  color: white;
+}
+
+.cancel-btn:hover {
+  background: #545b62;
+}
+
+.add-message-btn {
+  background: hsl(41, 100%, 56%) !important;
+  color: white !important;
+  font-weight: bold;
+  border: none !important;
+}
+
+.add-message-btn:hover {
+  background: #ffa836 !important;
+}

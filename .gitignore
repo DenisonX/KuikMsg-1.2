@@ -1,0 +1,20 @@
+# Versionar apenas a versão pública atual
+1.0/
+1.1/
+backup-*/
+KuikMsg-*-distribuicao-*/
+*.zip
+*.tar.gz
+
+# Arquivos duplicados/temporários
+**/* (1).*
+
+# Sistema e editor
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Logs/caches
+*.log
+.cache/
+tmp/

@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "KuikMsg 1.2",
+  "version": "1.2",
+  "description": "Extensão para enviar mensagens rápidas no tek.digisac.app",
+  "permissions": ["scripting", "activeTab", "tabs"],
+  "host_permissions": ["https://tek.digisac.app/*"],
+  "action": {
+    "default_title": "KuikMsg 1.2",
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://tek.digisac.app/*"],
+      "js": ["content.js"],
+      "css": ["style.css"]
+    }
+  ]
+}
