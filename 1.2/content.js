@@ -24,6 +24,40 @@ const DEFAULT_MESSAGES = [
 const CONVERSATION_LOG_KEY = "kuikmsgConversationLogs";
 const MAX_CONVERSATION_LOG_ITEMS = 500;
 const KUIKMSG_THEME_KEY = "kuikmsgTheme";
+const ASSISTED_AGENT_RULES = [
+  {
+    keywords: ["anydesk", "acesso remoto", "conexao", "conexão", "codigo", "código"],
+    response: "Por gentileza, poderia me encaminhar o código de conexão do *Anydesk* quando possível?"
+  },
+  {
+    keywords: ["atualizacao", "atualização", "atualizar", "versao", "versão"],
+    response: "Será necessário realizar uma atualização no seu sistema. Podemos prosseguir agora?"
+  },
+  {
+    keywords: ["travou", "travando", "lento", "lentidao", "lentidão", "demora"],
+    response: "Entendi. Estamos analisando sua solicitação. Por gentileza, aguarde um momento enquanto verificamos."
+  },
+  {
+    keywords: ["erro", "problema", "falha", "nao abre", "não abre", "nao consigo", "não consigo"],
+    response: "Certo, vou verificar isso para você. Poderia me informar em qual tela ou rotina esse problema acontece?"
+  },
+  {
+    keywords: ["bom dia", "oi", "ola", "olá"],
+    response: "Bom dia! Como posso auxiliá-lo(a)?"
+  },
+  {
+    keywords: ["boa tarde"],
+    response: "Boa tarde! Como posso auxiliá-lo(a)?"
+  },
+  {
+    keywords: ["obrigado", "obrigada", "valeu"],
+    response: "Nós que agradecemos o contato. Há algo mais em que eu possa auxiliá-lo(a)?"
+  },
+  {
+    keywords: ["sistema aberto", "outros computadores", "fechar sistema", "fechado"],
+    response: "Por gentileza, mantenha o sistema fechado nos demais computadores durante o procedimento."
+  }
+];
 
 // Load messages from localStorage or use defaults
 let mensagens = JSON.parse(localStorage.getItem('quickMessages') || JSON.stringify(DEFAULT_MESSAGES));
@@ -211,7 +245,7 @@ function startConversationAutoLog() {
   setTimeout(captureAndLogCurrentConversation, 2500);
 }
 
-function sendMessage(msg) {
+function fillMessageInput(msg) {
   const input = document.querySelector('[contenteditable="true"]');
 
   if (input) {
@@ -220,16 +254,60 @@ function sendMessage(msg) {
     document.getSelection().deleteFromDocument();
     document.execCommand("insertText", false, msg);
     input.dispatchEvent(new Event("input", { bubbles: true }));
-    
-    const botaoEnviar =
-      input.closest("form")?.querySelector("button[type='submit']") ||
-      document.querySelector("button[type='submit']");
-
-    if (botaoEnviar) {
-      botaoEnviar.click();
-    }
+    return true;
   } else {
     alert("Campo de mensagem não encontrado.");
+    return false;
+  }
+}
+
+function sendMessage(msg) {
+  if (!fillMessageInput(msg)) return;
+
+  const input = document.querySelector('[contenteditable="true"]');
+  const botaoEnviar =
+    input?.closest("form")?.querySelector("button[type='submit']") ||
+    document.querySelector("button[type='submit']");
+
+  if (botaoEnviar) {
+    botaoEnviar.click();
+  }
+}
+
+function getLastConversationMessage() {
+  const conversation = captureCurrentConversation();
+  const messages = conversation.messages || [];
+  return messages[messages.length - 1] || "";
+}
+
+function getAssistedAgentSuggestion() {
+  const lastMessage = getLastConversationMessage();
+  const normalizedMessage = normalizeSearchText(lastMessage);
+
+  for (const rule of ASSISTED_AGENT_RULES) {
+    if (rule.keywords.some((keyword) => normalizedMessage.includes(normalizeSearchText(keyword)))) {
+      return {
+        source: lastMessage,
+        response: rule.response
+      };
+    }
+  }
+
+  return {
+    source: lastMessage,
+    response: "Entendi. Vou verificar sua solicitação e já retorno com mais informações."
+  };
+}
+
+function suggestAssistedAgentResponse() {
+  const suggestion = getAssistedAgentSuggestion();
+  if (!suggestion.source) {
+    alert("Não encontrei uma mensagem recente do cliente para analisar.");
+    return;
+  }
+
+  if (fillMessageInput(suggestion.response)) {
+    menu.style.display = "none";
   }
 }
 
@@ -257,11 +335,13 @@ function refreshMenu() {
   
   const searchInput = menu.querySelector('#search-message-input');
   const addButton = menu.querySelector('#add-message-btn');
+  const agentButton = menu.querySelector('#assisted-agent-btn');
   menu.innerHTML = '';
   if (searchInput) {
     searchInput.value = messageSearchTerm;
     menu.appendChild(searchInput);
   }
+  if (agentButton) menu.appendChild(agentButton);
   if (addButton) menu.appendChild(addButton);
   
   const filteredMessages = mensagens
@@ -327,6 +407,12 @@ searchInput.addEventListener("input", () => {
   }
 });
 menu.appendChild(searchInput);
+
+const agentButton = document.createElement("button");
+agentButton.id = "assisted-agent-btn";
+agentButton.innerText = "🤖 Agente Assistido";
+agentButton.className = "assisted-agent-btn";
+menu.appendChild(agentButton);
 
 const addButton = document.createElement("button");
 addButton.id = "add-message-btn";
@@ -394,6 +480,10 @@ function closeMessageModal() {
 // Event handlers
 addButton.onclick = () => {
   openMessageModal();
+};
+
+agentButton.onclick = () => {
+  suggestAssistedAgentResponse();
 };
 
 modal.querySelector('.close').onclick = () => {

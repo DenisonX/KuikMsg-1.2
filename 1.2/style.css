@@ -211,6 +211,25 @@ body.kuikmsg-dark-theme #menu-msg-rapida .add-message-btn {
   background: linear-gradient(135deg, #0d4eb1, #0f3876) !important;
 }
 
+#menu-msg-rapida .assisted-agent-btn {
+  margin-bottom: 8px;
+  padding: 12px 14px;
+  background: linear-gradient(135deg, #22c55e, #0ea5e9) !important;
+  border: 1px solid #0284c7 !important;
+  color: #ffffff !important;
+  text-align: center;
+}
+
+body.kuikmsg-dark-theme #menu-msg-rapida .assisted-agent-btn {
+  background: linear-gradient(135deg, #16a34a, #0369a1) !important;
+  border-color: #7dd3fc !important;
+  color: #ffffff !important;
+}
+
+#menu-msg-rapida .assisted-agent-btn:hover {
+  background: linear-gradient(135deg, #15803d, #1d4ed8) !important;
+}
+
 /* Flappy Bird overlay styles */
 #flappy-toggle {
   position: fixed;
