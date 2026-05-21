@@ -56,6 +56,26 @@ const ASSISTED_AGENT_RULES = [
   {
     keywords: ["sistema aberto", "outros computadores", "fechar sistema", "fechado"],
     response: "Por gentileza, mantenha o sistema fechado nos demais computadores durante o procedimento."
+  },
+  {
+    keywords: ["nao conecta", "não conecta", "sem internet", "conexao caiu", "conexão caiu", "desconectou"],
+    response: "Entendi. Poderia me informar se o problema acontece em apenas um computador ou em todos?"
+  },
+  {
+    keywords: ["imprimir", "impressora", "danfe", "cupom", "relatorio", "relatório"],
+    response: "Certo, vou verificar a questão de impressão. Poderia me informar qual documento ou relatório está tentando imprimir?"
+  },
+  {
+    keywords: ["senha", "usuario", "usuário", "login", "acesso"],
+    response: "Certo. Poderia me informar qual usuário está apresentando dificuldade de acesso?"
+  },
+  {
+    keywords: ["nota fiscal", "nfe", "nf-e", "xml", "sefaz"],
+    response: "Entendi. Poderia me informar se aparece alguma mensagem de erro ao emitir ou transmitir a nota?"
+  },
+  {
+    keywords: ["financeiro", "boleto", "cobranca", "cobrança", "pagamento"],
+    response: "Certo. Poderia me encaminhar mais detalhes sobre a cobrança ou pagamento para verificarmos?"
   }
 ];
 
@@ -124,6 +144,32 @@ function cleanConversationText(text) {
     .trim();
 }
 
+function isUsefulConversationText(text) {
+  const normalizedText = normalizeSearchText(text);
+  const blockedTexts = [
+    "mensagens rapidas",
+    "agente assistido",
+    "adicionar mensagem",
+    "nenhuma mensagem encontrada",
+    "procurar mensagem pelo inicio de uma palavra",
+    "campo de mensagem nao encontrado",
+    "digite sua mensagem aqui",
+    "salvar",
+    "cancelar",
+    "flappy bird",
+    "score",
+    "restart",
+    "close"
+  ];
+
+  if (!normalizedText || normalizedText.length < 2 || normalizedText.length > 500) return false;
+  if (blockedTexts.some((blockedText) => normalizedText.includes(blockedText))) return false;
+  if (/^\d{1,2}:\d{2}$/.test(normalizedText)) return false;
+  if (/^[^\wÀ-ÿ]+$/.test(text)) return false;
+
+  return true;
+}
+
 function captureCurrentConversation() {
   const selectors = [
     '[class*="message"]',
@@ -136,12 +182,6 @@ function captureCurrentConversation() {
     '[role="listitem"]'
   ];
 
-  const blockedTexts = new Set([
-    "Mensagens Rápidas",
-    "Adicionar Mensagem",
-    "Nenhuma mensagem encontrada."
-  ]);
-
   const texts = [];
   const seen = new Set();
 
@@ -150,9 +190,7 @@ function captureCurrentConversation() {
     if (!isVisibleElement(element)) return;
 
     const text = cleanConversationText(element.innerText || element.textContent || "");
-    if (!text || text.length < 2 || text.length > 1000) return;
-    if (blockedTexts.has(text)) return;
-    if (text.includes("Procurar mensagem pelo início de uma palavra")) return;
+    if (!isUsefulConversationText(text)) return;
     if (seen.has(text)) return;
 
     seen.add(text);
@@ -161,7 +199,7 @@ function captureCurrentConversation() {
 
   if (texts.length === 0) {
     const fallbackText = cleanConversationText(window.getSelection().toString());
-    if (fallbackText) texts.push(fallbackText);
+    if (isUsefulConversationText(fallbackText)) texts.push(fallbackText);
   }
 
   return {
@@ -276,25 +314,39 @@ function sendMessage(msg) {
 
 function getLastConversationMessage() {
   const conversation = captureCurrentConversation();
-  const messages = conversation.messages || [];
+  const messages = (conversation.messages || []).filter(isUsefulConversationText);
   return messages[messages.length - 1] || "";
 }
 
-function getAssistedAgentSuggestion() {
-  const lastMessage = getLastConversationMessage();
-  const normalizedMessage = normalizeSearchText(lastMessage);
+function findAssistedAgentRule(message) {
+  const normalizedMessage = normalizeSearchText(message);
+  return ASSISTED_AGENT_RULES.find((rule) =>
+    rule.keywords.some((keyword) => normalizedMessage.includes(normalizeSearchText(keyword)))
+  );
+}
 
-  for (const rule of ASSISTED_AGENT_RULES) {
-    if (rule.keywords.some((keyword) => normalizedMessage.includes(normalizeSearchText(keyword)))) {
+function getAssistedAgentSuggestion() {
+  const conversation = captureCurrentConversation();
+  const messages = (conversation.messages || []).filter(isUsefulConversationText);
+
+  for (let index = messages.length - 1; index >= 0; index -= 1) {
+    const message = messages[index];
+    const rule = findAssistedAgentRule(message);
+
+    if (rule) {
       return {
-        source: lastMessage,
+        source: message,
+        matched: true,
         response: rule.response
       };
     }
   }
 
+  const lastMessage = messages[messages.length - 1] || "";
+
   return {
     source: lastMessage,
+    matched: false,
     response: "Entendi. Vou verificar sua solicitação e já retorno com mais informações."
   };
 }
@@ -307,6 +359,9 @@ function suggestAssistedAgentResponse() {
   }
 
   if (fillMessageInput(suggestion.response)) {
+    if (!suggestion.matched) {
+      alert("Não encontrei uma regra específica para a última mensagem. Inserindo resposta padrão para revisão.");
+    }
     menu.style.display = "none";
   }
 }
