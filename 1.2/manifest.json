@@ -3,7 +3,7 @@
   "name": "KuikMsg 1.2",
   "version": "1.2",
   "description": "Extensão para enviar mensagens rápidas no tek.digisac.app",
-  "permissions": ["scripting", "activeTab", "tabs"],
+  "permissions": ["scripting", "activeTab", "tabs", "storage"],
   "host_permissions": ["https://tek.digisac.app/*"],
   "action": {
     "default_title": "KuikMsg 1.2",

@@ -18,6 +18,14 @@ body.dark-popup-theme button:hover{background:#1e3a8a}
 .danger-button:hover{background:#fecaca}
 .warning-button{border-color:#fb923c;background:#fff7ed;color:#9a3412;font-weight:700}
 .warning-button:hover{background:#fed7aa}
+.mode-panel{margin:8px 0;padding:10px;border:1px solid #93c5fd;border-radius:8px;background:#eff6ff}
+body.dark-popup-theme .mode-panel{border-color:#1d4ed8;background:#0f172a}
+.mode-panel label{display:block;font-weight:700;margin-bottom:6px;color:#1e3a8a}
+body.dark-popup-theme .mode-panel label{color:#bae6fd}
+.mode-panel select{width:100%;padding:9px 10px;border:1px solid #93c5fd;border-radius:8px;background:#ffffff;color:#0f172a;font-weight:700}
+body.dark-popup-theme .mode-panel select{border-color:#334155;background:#020617;color:#e0f2fe}
+.mode-panel p{margin:7px 0 0;font-size:12px;color:#475569}
+body.dark-popup-theme .mode-panel p{color:#93c5fd}
 .info{margin-top:10px;background:#e2e8f0;color:#0f172a;border-radius:8px;padding:8px 10px}
 body.dark-popup-theme .info{background:#0f172a;color:#bae6fd;border:1px solid #1e40af}
 .info ul{margin:6px 0 0 16px;padding:0}

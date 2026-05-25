@@ -1,6 +1,7 @@
 const DIGISAC_URL = 'https://tek.digisac.app/';
 const HOMEPAGE_PATH = 'homepage/index.html';
 const POPUP_THEME_KEY = 'kuikmsgTheme';
+const OPERATION_MODE_KEY = 'kuikmsgOperationMode';
 
 function applyPopupTheme(theme) {
   document.body.classList.toggle('dark-popup-theme', theme === 'dark');
@@ -206,11 +207,60 @@ function toggleTheme() {
   });
 }
 
+function updateOperationModeStatus(mode) {
+  const status = document.getElementById('operation-mode-status');
+  if (!status) return;
+  status.textContent = mode === 'semi' ? 'Modo atual: Semi-automático' : 'Modo atual: Manual';
+}
+
+function applyOperationMode(mode) {
+  const selectedMode = mode === 'semi' ? 'semi' : 'manual';
+  const modeSelect = document.getElementById('operation-mode');
+  if (modeSelect) modeSelect.value = selectedMode;
+  updateOperationModeStatus(selectedMode);
+}
+
+function loadOperationMode() {
+  if (!chrome.storage || !chrome.storage.local) {
+    applyOperationMode('manual');
+    return;
+  }
+
+  chrome.storage.local.get({ [OPERATION_MODE_KEY]: 'manual' }, function(result) {
+    applyOperationMode(result[OPERATION_MODE_KEY]);
+  });
+}
+
+function notifyDigisacOperationMode(mode) {
+  if (!chrome.tabs || !chrome.tabs.query || !chrome.tabs.sendMessage) return;
+
+  getDigisacTab(function(tab) {
+    if (!tab) return;
+    chrome.tabs.sendMessage(tab.id, { type: 'SET_OPERATION_MODE', mode });
+  });
+}
+
+function changeOperationMode(event) {
+  const mode = event.target.value === 'semi' ? 'semi' : 'manual';
+  applyOperationMode(mode);
+
+  if (!chrome.storage || !chrome.storage.local) {
+    notifyDigisacOperationMode(mode);
+    return;
+  }
+
+  chrome.storage.local.set({ [OPERATION_MODE_KEY]: mode }, function() {
+    notifyDigisacOperationMode(mode);
+  });
+}
+
 applyPopupTheme(getPopupTheme());
+loadOperationMode();
 
 document.getElementById('open-digisac').addEventListener('click', openOrFocusDigisac);
 document.getElementById('open-homepage').addEventListener('click', openHomepage);
 document.getElementById('toggle-theme').addEventListener('click', toggleTheme);
+document.getElementById('operation-mode').addEventListener('change', changeOperationMode);
 document.getElementById('save-current-conversation').addEventListener('click', saveCurrentConversation);
 document.getElementById('export-conversation-log').addEventListener('click', exportConversationLog);
 document.getElementById('clear-conversation-log').addEventListener('click', clearConversationLog);

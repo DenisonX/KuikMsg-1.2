@@ -24,6 +24,7 @@ const DEFAULT_MESSAGES = [
 const CONVERSATION_LOG_KEY = "kuikmsgConversationLogs";
 const MAX_CONVERSATION_LOG_ITEMS = 500;
 const KUIKMSG_THEME_KEY = "kuikmsgTheme";
+const OPERATION_MODE_KEY = "kuikmsgOperationMode";
 const ASSISTED_AGENT_RULES = [
   {
     keywords: ["anydesk", "acesso remoto", "conexao", "conexão", "codigo", "código"],
@@ -366,6 +367,74 @@ function suggestAssistedAgentResponse() {
   }
 }
 
+let operationMode = "manual";
+let lastSemiAutomaticSource = "";
+
+function setOperationMode(mode) {
+  operationMode = mode === "semi" ? "semi" : "manual";
+  if (operationMode !== "semi") {
+    hideSemiAutomaticSuggestion();
+  }
+}
+
+function loadOperationMode() {
+  if (!chrome.storage || !chrome.storage.local) return;
+
+  chrome.storage.local.get({ [OPERATION_MODE_KEY]: "manual" }, function(result) {
+    setOperationMode(result[OPERATION_MODE_KEY]);
+  });
+}
+
+function getSuggestionSignature(suggestion) {
+  return normalizeSearchText(`${suggestion.source}|${suggestion.response}`);
+}
+
+function showSemiAutomaticSuggestion(suggestion) {
+  if (!suggestion.source) return;
+
+  const panel = document.getElementById("kuik-semi-agent-panel");
+  if (!panel) return;
+
+  panel.querySelector(".kuik-semi-source").innerText = suggestion.source;
+  panel.querySelector(".kuik-semi-response").innerText = suggestion.response;
+  panel.dataset.response = suggestion.response;
+  panel.style.display = "block";
+}
+
+function hideSemiAutomaticSuggestion() {
+  const panel = document.getElementById("kuik-semi-agent-panel");
+  if (!panel) return;
+
+  panel.style.display = "none";
+  panel.dataset.response = "";
+}
+
+function evaluateSemiAutomaticSuggestion() {
+  if (operationMode !== "semi") return;
+
+  const suggestion = getAssistedAgentSuggestion();
+  if (!suggestion.source || !suggestion.matched) return;
+
+  const signature = getSuggestionSignature(suggestion);
+  if (signature === lastSemiAutomaticSource) return;
+
+  lastSemiAutomaticSource = signature;
+  showSemiAutomaticSuggestion(suggestion);
+}
+
+function startSemiAutomaticAgent() {
+  let timeoutId = null;
+
+  const scheduleSuggestion = () => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(evaluateSemiAutomaticSuggestion, 1600);
+  };
+
+  const observer = new MutationObserver(scheduleSuggestion);
+  observer.observe(document.body, { childList: true, subtree: true, characterData: true });
+  setTimeout(evaluateSemiAutomaticSuggestion, 3000);
+}
+
 let messageSearchTerm = "";
 
 function normalizeSearchText(text) {
@@ -476,6 +545,22 @@ addButton.className = "add-message-btn";
 menu.appendChild(addButton);
 document.body.appendChild(menu);
 
+const semiAgentPanel = document.createElement("div");
+semiAgentPanel.id = "kuik-semi-agent-panel";
+semiAgentPanel.style.display = "none";
+semiAgentPanel.innerHTML = `
+  <strong>🤖 Kuik sugeriu uma resposta</strong>
+  <small>Mensagem analisada:</small>
+  <div class="kuik-semi-source"></div>
+  <small>Resposta sugerida:</small>
+  <div class="kuik-semi-response"></div>
+  <div class="kuik-semi-actions">
+    <button type="button" id="kuik-use-suggestion">Usar resposta</button>
+    <button type="button" id="kuik-ignore-suggestion">Ignorar</button>
+  </div>
+`;
+document.body.appendChild(semiAgentPanel);
+
 botao.onclick = () => {
   menu.style.display = menu.style.display === "flex" ? "none" : "flex";
 };
@@ -541,6 +626,18 @@ agentButton.onclick = () => {
   suggestAssistedAgentResponse();
 };
 
+document.getElementById("kuik-use-suggestion").onclick = () => {
+  const panel = document.getElementById("kuik-semi-agent-panel");
+  const response = panel?.dataset.response || "";
+  if (response && fillMessageInput(response)) {
+    hideSemiAutomaticSuggestion();
+  }
+};
+
+document.getElementById("kuik-ignore-suggestion").onclick = () => {
+  hideSemiAutomaticSuggestion();
+};
+
 modal.querySelector('.close').onclick = () => {
   closeMessageModal();
 };
@@ -599,11 +696,18 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request && request.type === 'TOGGLE_KUIKMSG_THEME') {
     sendResponse({ ok: true, theme: toggleKuikmsgTheme() });
   }
+
+  if (request && request.type === 'SET_OPERATION_MODE') {
+    setOperationMode(request.mode);
+    sendResponse({ ok: true, mode: operationMode });
+  }
 });
 
 applyKuikmsgTheme(getKuikmsgTheme());
+loadOperationMode();
 refreshMenu();
 startConversationAutoLog();
+startSemiAutomaticAgent();
 
 // Flappy Bird overlay and game
 (function initFlappyBird() {

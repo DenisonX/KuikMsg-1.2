@@ -15,6 +15,14 @@
       <button id="open-digisac">Abrir Digisac</button>
       <button id="open-homepage">📘 Abrir Homepage</button>
       <button id="toggle-theme" class="theme-button">🌙 Alternar tema</button>
+      <section class="mode-panel">
+        <label for="operation-mode">🤖 Modo de operação</label>
+        <select id="operation-mode">
+          <option value="manual">Manual</option>
+          <option value="semi">Semi-automático</option>
+        </select>
+        <p id="operation-mode-status">Modo atual: Manual</p>
+      </section>
       <button id="save-current-conversation" class="success-button">💾 Salvar conversa atual</button>
       <button id="export-conversation-log" class="success-button">📁 Exportar log</button>
       <button id="clear-conversation-log" class="danger-button">🧹 Limpar log</button>
@@ -27,6 +35,7 @@
           <li>Alterne entre tema escuro azul e tema claro pelo popup.</li>
           <li>Salve manualmente a conversa atual quando necessário.</li>
           <li>O log automático fica salvo localmente neste navegador.</li>
+          <li>No modo semi-automático, o Kuik sugere respostas para você aprovar.</li>
           <li>Restaure as mensagens padrão profissionais pelo popup.</li>
           <li>Abra a homepage para ver recursos, instalação e tutorial.</li>
           <li>Use Espaço ou clique para voar no jogo.</li>

@@ -230,6 +230,87 @@ body.kuikmsg-dark-theme #menu-msg-rapida .assisted-agent-btn {
   background: linear-gradient(135deg, #15803d, #1d4ed8) !important;
 }
 
+#kuik-semi-agent-panel {
+  position: fixed;
+  right: 24px;
+  bottom: 420px;
+  width: 360px;
+  z-index: 10001;
+  box-sizing: border-box;
+  padding: 14px;
+  border: 2px solid #22c55e;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #ecfdf5, #eff6ff);
+  color: #0f172a;
+  box-shadow: 0 16px 36px rgba(15, 23, 42, 0.28);
+}
+
+body.kuikmsg-dark-theme #kuik-semi-agent-panel {
+  border-color: #38bdf8;
+  background: linear-gradient(180deg, #020617, #0f172a);
+  color: #e0f2fe;
+  box-shadow: 0 18px 42px rgba(2, 132, 199, 0.42);
+}
+
+#kuik-semi-agent-panel strong,
+#kuik-semi-agent-panel small {
+  display: block;
+}
+
+#kuik-semi-agent-panel strong {
+  margin-bottom: 10px;
+  font-size: 15px;
+}
+
+#kuik-semi-agent-panel small {
+  margin-top: 8px;
+  margin-bottom: 4px;
+  color: #475569;
+  font-weight: 700;
+}
+
+body.kuikmsg-dark-theme #kuik-semi-agent-panel small {
+  color: #93c5fd;
+}
+
+#kuik-semi-agent-panel .kuik-semi-source,
+#kuik-semi-agent-panel .kuik-semi-response {
+  padding: 9px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid #bfdbfe;
+  line-height: 1.35;
+  font-size: 13px;
+}
+
+body.kuikmsg-dark-theme #kuik-semi-agent-panel .kuik-semi-source,
+body.kuikmsg-dark-theme #kuik-semi-agent-panel .kuik-semi-response {
+  background: rgba(15, 23, 42, 0.9);
+  border-color: #1d4ed8;
+}
+
+#kuik-semi-agent-panel .kuik-semi-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+#kuik-semi-agent-panel button {
+  flex: 1;
+  padding: 9px 10px;
+  border-radius: 9px;
+  border: 1px solid #0284c7;
+  background: linear-gradient(135deg, #22c55e, #0ea5e9);
+  color: #ffffff;
+  cursor: pointer;
+  font-weight: 800;
+}
+
+#kuik-semi-agent-panel #kuik-ignore-suggestion {
+  border-color: #64748b;
+  background: linear-gradient(135deg, #64748b, #334155);
+}
+
 /* Flappy Bird overlay styles */
 #flappy-toggle {
   position: fixed;
